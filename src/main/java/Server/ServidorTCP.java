@@ -12,21 +12,22 @@ public class ServidorTCP {
         Socket socket = serverSocket.accept();
 
         InputStream inputStream = socket.getInputStream();
-        DataInputStream dataInputStream = new DataInputStream(inputStream);
-        String nombreArchivo = dataInputStream.readUTF();
+        DataInputStream in = new DataInputStream(inputStream);
+        String nombreArchivo = in.readUTF();
 
         OutputStream outputStream = socket.getOutputStream();
+        DataOutputStream out = new DataOutputStream(outputStream);
 
         if(new File("src/main/java/Server/"+nombreArchivo).exists()){
-            outputStream.write("Archivo ya existe".getBytes());
+            out.writeUTF("Archivo ya existe");
             byte[] buffer = new byte[1024];
             int len;
-            while ((len = inputStream.read(buffer)) != -1){
+            while ((len = in.read(buffer)) != -1){
 
             }
 
         }else{
-            FileOutputStream fileOutputStream = new FileOutputStream(new File("src/main/java/Server/"+nombreArchivo));
+            FileOutputStream fileOutputStream = new FileOutputStream("src/main/java/Server/"+nombreArchivo);
             byte[] buffer = new byte[1024];
             int len;
             while ((len = inputStream.read(buffer)) != -1){
@@ -34,7 +35,7 @@ public class ServidorTCP {
 
             }
             fileOutputStream.close();
-            outputStream.write("Archivo recibido por servidor".getBytes());
+            out.writeUTF("Archivo recibido por el servidor");
             System.out.println("Se recibio el archivo: "+nombreArchivo);
 
         }
